@@ -96,14 +96,17 @@ def create_module_file(package, module, opts):
 
 def create_package_file(root, master_package, subroot, py_files, opts, subs):
     """Build the text of the file and write the file."""
-    text = format_heading(1, '%s package' % makename(master_package, subroot))
+    package_name = subroot
+    if subroot:
+        package_name = subroot[0].upper() + subroot[1:]
+    text = format_heading(1, package_name)
 
     if opts.modulefirst:
         text += format_directive(subroot, master_package)
         text += '\n'
 
     # build a list of directories that are szvpackages (contain an INITPY file)
-    subs = [sub for sub in subs if path.isfile(path.join(root, sub, INITPY))]
+    subs = [sub for sub in subs if path.isfile(path.join(root, sub, INITPY)) and sub not in ['tests', 'migrations']]
     # if there are some package directories, add a TOC for theses subpackages
     if subs:
         text += format_heading(2, 'Subpackages')
